@@ -1,0 +1,89 @@
+https://www.youtube.com/watch?v=p8CoR-wymQg&t=146s  36:10
+//Ruta del tutorial:
+C:\php7\htdocs\OOP+SQL\chain_gang\public
+
+git init //para crear la carpeta dentro del folder principal del proyecto
+git status //para confirmar que git esta trackeando los folders
+-------------------------------------------------------------------
+//para agregar a staging area un archivo
+git add estudiante_crud/form_estudiante.php
+
+//para sacar el archivo de staging area
+git rm --cached  estudiante_crud/form_estudiante.php
+
+//para meter a staging area todos los archivos al mismo tiempo
+git add .
+
+---------------------------------------------------------------
+//para hacer commit de algun archivo
+git commit -m "guardar cambios en form nuevo"
+
+-------------------------------------------------------------
+//para ver el historial de todos los commits
+git log
+// con una sola linea de detalle, el hsitorial de commits
+git log --oneline
+
+---BACK IN TIME:------------------------------------------------------------
+//para volver a un punto en el pasado
+git checkout 0c8db5f
+
+//para vovler al punto mas actual
+git checkout master
+
+----NEW BRANCH--------------------------------------------------------
+//crear un branch nuevo:
+git branch rama1
+
+//mostrar todos los branches:(el asterisco muestra en q branch estoy actualmente)
+git branch -a
+
+//para cambiar de branch
+git checkout rama1
+
+//para borrar un branch que no esta merged con el master
+//1. switch to master 
+git checkout master
+//2. delete branch 
+git branch -D rama1
+
+//para crear un branch y hacer el checkout de ese nuevo branch al mismo tiempo:
+git checkout -b rama2
+
+
+
+-----MERGE WITH MASTER--------------------------------------------------------
+//cambiar al master
+git checkout master
+git merge rama2
+
+
+
+----GITHUB--------------------------------------------------------------------------------
+1) create repository on github
+1.1) en el terminal atom escribir "git init"
+1.2) en el terminal atom escribir "git add ." y luego "git commit -m "first commit" "
+
+
+git remote add github_repo https://github.com/yoshiokiyamusu/node_api.git
+
+git remote add repoclone https://github.com/yoshiokiyamusu/foodcourt
+
+2)push to master your localhost code
+git push github_repo master
+
+yoshiokiyamusu@gmail.com
+
+3) pull code from github
+git pull github_repo master
+----------------------------------------------
+4) branches:
+4.1) creo un branch localy
+git checkout -b ramagh
+
+4.2) push the branch into the corresponding github repository
+git push github_repo ramagh
+
+
+-------------------------------------------
+git clone link

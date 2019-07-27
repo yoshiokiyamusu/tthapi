@@ -1,6 +1,17 @@
-asdads
+//https://www.youtube.com/watch?v=p8CoR-wymQg&t=2170s
+const express = require('express');
+const app = express();
 
+// Settings
+app.set('port', process.env.PORT || 3001);
 
-edit desde github web
+// Middlewares
+app.use(express.json());
 
-contenido para guardar en el branch ramagh
+// Routes
+app.use(require('./routes/employees'));
+
+// Starting the server
+app.listen(app.get('port'), () => {
+  console.log(`Server on port ${app.get('port')}`);
+});
