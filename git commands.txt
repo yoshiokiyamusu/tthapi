@@ -42,9 +42,9 @@ git branch -a
 git checkout rama1
 
 //para borrar un branch que no esta merged con el master
-//1. switch to master 
+//1. switch to master
 git checkout master
-//2. delete branch 
+//2. delete branch
 git branch -D rama1
 
 //para crear un branch y hacer el checkout de ese nuevo branch al mismo tiempo:
@@ -65,12 +65,12 @@ git merge rama2
 1.2) en el terminal atom escribir "git add ." y luego "git commit -m "first commit" "
 
 
-git remote add github_repo https://github.com/yoshiokiyamusu/node_api.git
+git remote add github_repo2 https://github.com/yoshiokiyamusu/node_api.git
 
 git remote add repoclone https://github.com/yoshiokiyamusu/foodcourt
 
 2)push to master your localhost code
-git push github_repo master
+git push github_repo2 master
 
 yoshiokiyamusu@gmail.com
 
@@ -87,3 +87,4 @@ git push github_repo ramagh
 
 -------------------------------------------
 git clone link
+ wewe
