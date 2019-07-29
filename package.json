@@ -9,9 +9,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start":"node src/index.js",
-
-  "dev": "nodemon ./src"
+    "start": "node src/index.js",
+    "dev": "nodemon ./src"
   },
   "keywords": [],
   "author": "",
