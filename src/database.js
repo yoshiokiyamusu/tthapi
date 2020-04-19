@@ -1,10 +1,10 @@
 const mysql = require('mysql');
 
 const mysqlConnection = mysql.createConnection({
-  host: 'localhost',
-  user: 'webuser',
-  password: 'yoshio12qw',
-  database: 'company',
+  host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+  user: 'mlq7ddpaya3gnozv',
+  password: 'n4slsu3xuaiqtbgd',
+  database: 'szps1l4ru1pkph3s',
   multipleStatements: true
 });
 
@@ -19,6 +19,17 @@ mysqlConnection.connect(function (err) {
 
 module.exports = mysqlConnection;
 /*
+//PARA CONECTAR AL MYSQL REMOTO::
+const mysqlConnection = mysql.createConnection({
+        host: 'fugfonv8odxxolj8.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+        user: 'cfvc0xg9mms2s789',
+        password: 'zcyp2fux4q42n6rm',
+        database: 'm6ul1nyhger85ik5',
+  multipleStatements: true
+});
+
+
+********************************
 CREATE DATABASE IF NOT EXISTS company;
 
 USE company;
