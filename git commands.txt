@@ -3,6 +3,12 @@ https://www.youtube.com/watch?v=p8CoR-wymQg&t=146s  36:10
 C:\php7\htdocs\OOP+SQL\chain_gang\public
 
 git init //para crear la carpeta dentro del folder principal del proyecto
+
+git add .
+git commit -m "guardar"
+git remote add mysqlrest https://github.com/yoshiokiyamusu/rest_api_mysql.git
+git push -u mysqlrest master
+
 git status //para confirmar que git esta trackeando los folders
 -------------------------------------------------------------------
 //para agregar a staging area un archivo

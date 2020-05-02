@@ -1,9 +1,12 @@
 //https://www.youtube.com/watch?v=p8CoR-wymQg&t=2170s
 const express = require('express');
+
+
+const infoRoutes = require('./routes/info_mysql');
 const app = express();
 
 // Settings
-app.set('port', process.env.PORT || 3001);
+app.set('port', process.env.PORT || 3005);
 
 
 
@@ -20,9 +23,9 @@ app.use(function(req, res, next) {
 })
 
 
-// Routes
+//Rutas del servidor
 app.use(require('./routes/employees'));
-
+app.use('/info', infoRoutes);
 
 // Starting the server
 app.listen(app.get('port'), () => {
