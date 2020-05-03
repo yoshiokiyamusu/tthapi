@@ -86,7 +86,7 @@ router.get('/comentarios_orden_servicio/:ordenserv', (req, res) => {
 
 
 
-
+// - - - - - - - 
 
 //GET todas ordenes de servicio
 router.get('/books', (req, res) => {
@@ -102,9 +102,6 @@ router.get('/books', (req, res) => {
     }
   });
 });
-
-
-
 
 
 

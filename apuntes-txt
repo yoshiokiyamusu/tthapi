@@ -5,6 +5,7 @@ git commit -m "first commit"
 git remote add api_tol_proveedor1 https://github.com/yoshiokiyamusu/api_tol_proveedor1.git
 git push -u api_tol_proveedor1 master
 
+git push api_tol_proveedor1 master
 
 //para crear una rama
 git checkout -b branch2may     (nuevo)
