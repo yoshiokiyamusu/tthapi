@@ -21,12 +21,7 @@ mysqlConnection.connect(function (err) {
 module.exports = mysqlConnection;
 
 
-
-
-
-
 /*
-
 heroku TOL
 const mysqlConnection = mysql.createConnection({
   host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
@@ -41,7 +36,7 @@ const mysqlConnection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'node_db_practice', //corner_tool   node_db_practice
+  database: 'corner_tool', //corner_tool   node_db_practice
   multipleStatements: true
 });
 
