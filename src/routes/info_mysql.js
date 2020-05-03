@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mysqlConnection  = require('../database.js');
+const isAuth = require('../middleware/is-auth'); //para ponerle restriccion de tocken a las funciones
 
 /*
 //GET todas ordenes de servicio
@@ -19,7 +20,7 @@ router.get('/orden_servicio', (req, res) => {
 });
 */
 // GET todas ordenes de servicio de un determinado taller
-router.get('/orden_servicio/:proveedor', (req, res) => {
+router.get('/orden_servicio/:proveedor',  (req, res) => { //isAuth,
     var data = {
      "proveedor": req.params.proveedor        
     };
@@ -78,5 +79,34 @@ router.get('/comentarios_orden_servicio/:ordenserv', (req, res) => {
       }
     });
 });
+
+
+
+
+
+
+
+
+
+//GET todas ordenes de servicio
+router.get('/books', (req, res) => {
+
+  $var_sql = "select * from books ";
+ 
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if(!err) {
+      res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+
+
+
+
+
 
 module.exports = router;

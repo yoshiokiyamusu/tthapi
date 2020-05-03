@@ -1,8 +1,10 @@
 //https://www.youtube.com/watch?v=p8CoR-wymQg&t=2170s
 const express = require('express');
+const db = require('./database');
 
-
+const bodyParser = require('body-parser');
 const infoRoutes = require('./routes/info_mysql');
+const writeRoutes = require('./routes/write_db');
 const app = express();
 
 // Settings
@@ -26,6 +28,7 @@ app.use(function(req, res, next) {
 //Rutas del servidor
 app.use(require('./routes/employees'));
 app.use('/info', infoRoutes);
+app.use('/write', writeRoutes);
 
 // Starting the server
 app.listen(app.get('port'), () => {

@@ -1,10 +1,11 @@
+
 const mysql = require('mysql');
 
 const mysqlConnection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'corner_tool',
+  host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+  user: 'mlq7ddpaya3gnozv',
+  password: 'n4slsu3xuaiqtbgd',
+  database: 'szps1l4ru1pkph3s',
   multipleStatements: true
 });
 
@@ -18,6 +19,12 @@ mysqlConnection.connect(function (err) {
 });
 
 module.exports = mysqlConnection;
+
+
+
+
+
+
 /*
 
 heroku TOL
@@ -29,6 +36,14 @@ const mysqlConnection = mysql.createConnection({
   multipleStatements: true
 });
 
+localhost
+const mysqlConnection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'node_db_practice', //corner_tool   node_db_practice
+  multipleStatements: true
+});
 
 
 
