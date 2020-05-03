@@ -9,7 +9,7 @@ const writeRoutes = require('./routes/write_db');
 const app = express();
 
 // Settings
-app.set('port', process.env.PORT || 3005);
+app.set('port', process.env.PORT || 3006);
 
 
 // Middlewares
