@@ -2,10 +2,10 @@
 const mysql = require('mysql');
 
 const mysqlConnection = mysql.createConnection({
-  host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-  user: 'mlq7ddpaya3gnozv',
-  password: 'n4slsu3xuaiqtbgd',
-  database: 'szps1l4ru1pkph3s',
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'corner_tool', //corner_tool   node_db_practice
   multipleStatements: true
 });
 
@@ -41,7 +41,7 @@ const mysqlConnection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'node_db_practice', //corner_tool   node_db_practice
+  database: 'corner_tool', //corner_tool   node_db_practice
   multipleStatements: true
 });
 

@@ -1,9 +1,43 @@
-//const { validationResult } = require('express-validator/check');
 
+const { validationResult } = require('express-validator/check');
 //const Book = require('../models/write_db.js');
 const mysqlConnection  = require('../database.js');
 
+// POST comentarios de proveedor, en base a cierta orden
+exports.post_comment_proveedor = (req, res, next) => {
 
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation fallo.');
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+    
+  }
+
+  const nombre_mov = 'comentario' 
+  const orden = req.body.orden; 
+  const sku = '-'; 
+  const cantidad = 0; 
+  const descripcion_mov = 'comentario orden servicio taller'; 
+  const comentario = req.body.comentario; 
+  const usuario = req.body.usuario; 
+  const estado = ''; 
+  
+
+  $var_sql = "INSERT INTO tb_temp_movimiento (nombre_mov, orden, sku, cantidad, descripcion_mov, comentario, usuario, estado) ";
+  $var_sql += "VALUES ('" + nombre_mov + "','" + orden + "','" + sku + "'," + cantidad + ",'" + descripcion_mov + "','" + comentario + "','" + usuario + "','" + estado + "') ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if(!err) {
+      res.status(201).json({ message: 'User created!', userId: usuario });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+};
 
 // GET todos los comentarios de una orden de servicio
 exports.createPost2 = (req, res, next) => {

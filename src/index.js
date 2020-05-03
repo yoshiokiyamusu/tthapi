@@ -25,6 +25,16 @@ app.use(function(req, res, next) {
 })
 
 
+//Para crear el objecto Error:
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({ message: message, data: data  });
+});
+
+
 //Rutas del servidor
 app.use(require('./routes/employees'));
 app.use('/info', infoRoutes);
