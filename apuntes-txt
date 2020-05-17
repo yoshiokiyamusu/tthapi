@@ -17,4 +17,4 @@ git push api_tol_proveedor2 branch14may
 
 //para hacer el merge de rama a master:
 git checkout master
-git merge branch14ay
+git merge branch14may
