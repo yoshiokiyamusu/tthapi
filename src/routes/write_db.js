@@ -15,8 +15,8 @@ router.post('/book',
   ],*/
 writeController.createPost2);
 
-// POST /write/comment
-router.post('/comment', 
+// POST /write/comment     
+router.post('/comment',isAuth,  
   [
     body('usuario')
       .trim()

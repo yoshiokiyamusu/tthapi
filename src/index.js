@@ -6,6 +6,7 @@ const db = require('./database');
 const bodyParser = require('body-parser');
 const infoRoutes = require('./routes/info_mysql');
 const writeRoutes = require('./routes/write_db');
+const authRoutes = require('./routes/auth');
 const app = express();
 
 // Settings
@@ -34,6 +35,8 @@ app.use(function(req, res, next) {
 app.use(require('./routes/employees'));
 app.use('/info', infoRoutes);
 app.use('/write', writeRoutes);
+app.use('/auth', authRoutes);
+
 
 // Starting the server
 app.listen(app.get('port'), () => {

@@ -20,7 +20,7 @@ router.get('/orden_servicio', (req, res) => {
 });
 */
 // GET todas ordenes de servicio de un determinado taller
-router.get('/orden_servicio/:proveedor',  (req, res) => { //isAuth,
+router.get('/orden_servicio/:proveedor', isAuth,  (req, res) => { //isAuth,
     var data = {
      "proveedor": req.params.proveedor        
     };

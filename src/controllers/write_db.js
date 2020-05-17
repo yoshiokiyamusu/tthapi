@@ -2,6 +2,7 @@
 const { validationResult } = require('express-validator/check');
 //const Book = require('../models/write_db.js');
 const mysqlConnection  = require('../database.js');
+const isAuth = require('../middleware/is-auth'); //para ponerle restriccion de tocken a las funciones
 
 // POST comentarios de proveedor, en base a cierta orden
 exports.post_comment_proveedor = (req, res, next) => {
@@ -31,7 +32,7 @@ exports.post_comment_proveedor = (req, res, next) => {
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if(!err) {
-      res.status(201).json({ message: 'User created!', userId: usuario });
+      res.status(201).json({ message_post: 'Información guardada', userId: usuario });
       //res.json(rows);
     } else {
       console.log(err);
