@@ -28,7 +28,7 @@ exports.post_comment_proveedor = (req, res, next) => {
 
   $var_sql = "INSERT INTO tb_temp_movimiento (nombre_mov, orden, sku, cantidad, descripcion_mov, comentario, usuario, estado) ";
   $var_sql += "VALUES ('" + nombre_mov + "','" + orden + "','" + sku + "'," + cantidad + ",'" + descripcion_mov + "','" + comentario + "','" + usuario + "','" + estado + "') ";
-  //console.log($var_sql);
+  console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if(!err) {
@@ -39,6 +39,67 @@ exports.post_comment_proveedor = (req, res, next) => {
     }
   });
 };
+
+
+
+
+// UPDATE comentario estado
+exports.post_comment_inactivo_os= (req, res, next) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation fallo.');
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+    
+  }
+
+  const nombre_mov = 'comentario' 
+  const orden = req.body.orden; 
+  const sku = '-'; 
+  const cantidad = 0; 
+  const descripcion_mov = 'comentario orden servicio taller'; 
+  const comentario = req.body.comentario; 
+  const usuario = req.body.usuario; 
+  
+  $var_sql = "UPDATE tb_temp_movimiento SET estado = 'no_activo' ";
+  $var_sql += " WHERE descripcion_mov = 'comentario orden servicio taller' ";
+  $var_sql += " AND orden = '" + orden + "' ";
+  $var_sql += " AND comentario = '" + comentario + "' ";
+  $var_sql += " AND usuario = '" + usuario + "' ";
+
+  console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if(!err) {
+      res.status(201).json({ message_post: 'Comentario inactivo', userId: usuario });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // GET todos los comentarios de una orden de servicio
 exports.createPost2 = (req, res, next) => {

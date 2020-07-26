@@ -22,10 +22,19 @@ router.post('/comment',isAuth,
       .trim()
       .not()
       .isEmpty()
-      .isLength({ min: 6 })
+      .isLength({ min: 1 })
   ],
 writeController.post_comment_proveedor);
 
-
+// Update /write/inactivo_comment     
+router.post('/inactivo_comment',isAuth,  
+  [
+    body('usuario')
+      .trim()
+      .not()
+      .isEmpty()
+      .isLength({ min: 1 })
+  ],
+writeController.post_comment_inactivo_os);
 
 module.exports = router;

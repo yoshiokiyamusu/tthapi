@@ -19,7 +19,7 @@ router.get('/orden_servicio', (req, res) => {
     });
 });
 */
-// GET todas ordenes de servicio de un determinado taller
+// GET todas ordenes de servicio de un determinado taller //http://localhost:3006/info/orden_servicio/janina
 router.get('/orden_servicio/:proveedor', isAuth,  (req, res) => { //isAuth,
     var data = {
      "proveedor": req.params.proveedor        
@@ -41,7 +41,7 @@ router.get('/orden_servicio/:proveedor', isAuth,  (req, res) => { //isAuth,
 });
 
 // GET todas ordenes de servicio de un determinado taller
-router.get('/sku_orden_servicio/:ordenserv', (req, res) => {
+router.get('/sku_orden_servicio/:ordenserv', isAuth,(req, res) => {
     var data = {
      "ordenserv": req.params.ordenserv        
     };
@@ -61,7 +61,7 @@ router.get('/sku_orden_servicio/:ordenserv', (req, res) => {
 });
 
 // GET todos los comentarios de una orden de servicio
-router.get('/comentarios_orden_servicio/:ordenserv', (req, res) => {
+router.get('/comentarios_orden_servicio/:ordenserv', isAuth,(req, res) => {
     var data = {
      "ordenserv": req.params.ordenserv        
     };
@@ -80,28 +80,241 @@ router.get('/comentarios_orden_servicio/:ordenserv', (req, res) => {
     });
 });
 
+//----ORDEN DE SERVICIO (NIVEL de orden de servicio)----------------------------------
+router.get('/ordenes_servicio/:proveedor', isAuth,(req, res) => { //isAuth,
+  var data = {
+   "proveedor": req.params.proveedor    
+  };
+  //console.log(data.proveedor);
 
+  $var_sql = " SELECT json_object('orden_servicio',pendiente_prov.orden_servicio , 'fecha_envio',pendiente_prov.fecha_envio, ";
+  $var_sql += " 'fecha_entrega',pendiente_prov.recibo_fecha_desde, ";
+  $var_sql += " 'proveedor',pendiente_prov.proveedor, 'comentario', pendiente_prov.comentario) as myobj ";
+  $var_sql += " FROM ( SELECT tb.orden_servicio, tb.fecha_envio, tb.proveedor, tb.recibo_fecha_desde, ";
+  $var_sql += " sku.sku, sku.sku_readable, sku.cantidad, recep_grp.cantidad as 'qty', commento.comentario, ";
+  $var_sql += " CASE ";
+  $var_sql += " WHEN (sku.cantidad - recep_grp.cantidad) is not null THEN (sku.cantidad - recep_grp.cantidad) ";
+  $var_sql += " WHEN (sku.cantidad - recep_grp.cantidad) is null THEN sku.cantidad ";
+  $var_sql += " END as cantidad_restante ";
+  $var_sql += " FROM orden_de_servicio as tb  ";
+  $var_sql += " inner join orden_de_servicio_sku as sku ON tb.orden_servicio = sku.orden_servicio ";
+  $var_sql += " left join ( ";
+  $var_sql += " SELECT rec.orden_servicio, rec.sku, SUM(rec.cantidad) as cantidad ";
+  $var_sql += " FROM recepcion as rec group by rec.sku, rec.orden_servicio ";
+  $var_sql += " ) as recep_grp on tb.orden_servicio = recep_grp.orden_servicio AND sku.sku = recep_grp.sku ";
+  $var_sql += " left join ( select orden, comentario from tb_temp_movimiento where descripcion_mov = 'comentario orden servicio taller' ";
+  $var_sql += " ) as commento ON commento.orden = tb.orden_servicio ";
+  $var_sql += " WHERE tb.proveedor = '" + data.proveedor + "' ";
+  $var_sql += " HAVING cantidad_restante > 1 ";
+  $var_sql += " ) AS pendiente_prov ";
+  $var_sql += " GROUP BY pendiente_prov.orden_servicio ";
+  $var_sql += " ";
 
-
-
-
-
-// - - - - - - - 
-
-//GET todas ordenes de servicio
-router.get('/books', (req, res) => {
-
-  $var_sql = "select * from books ";
- 
+  //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
+    
+    var ar = {} // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for(let i=0; i<rows.length; i++){  
+      var filajs = JSON.parse(rows[i].myobj);
+        var objetoArray ={
+            "orden":filajs.orden_servicio,
+            "proveedor":filajs.proveedor,
+            "fecha_creacion":filajs.fecha_envio,
+            "fecha_entrega":filajs.fecha_entrega,
+            "comentario":filajs.comentario           
+        };
+        ar[os].push(objetoArray);  
+    } //end of OP loop 
+        
+    console.log(ar[os]); 
+        if(!err) {
+          res.send(ar[os]);
+        } else {
+          console.log(err);
+        }
+  });// end mysqlConnection row
+});
+
+
+//----ORDEN DE SERVICIO (NIVEL de orden de servicio) limit 1----------------------------------
+router.get('/uno_ordenes_servicio/:proveedor/:oserv', isAuth,(req, res) => { //isAuth,
+  var data = {
+   "proveedor": req.params.proveedor,
+   "oserv": req.params.oserv      
+  };
+  //console.log(data.proveedor);
+
+  $var_sql = " SELECT json_object('orden_servicio',pendiente_prov.orden_servicio , 'fecha_envio',pendiente_prov.fecha_envio, ";
+  $var_sql += " 'fecha_entrega',pendiente_prov.recibo_fecha_desde, ";
+  $var_sql += " 'proveedor',pendiente_prov.proveedor, 'comentario', pendiente_prov.comentario) as myobj ";
+  $var_sql += " FROM ( SELECT tb.orden_servicio, tb.fecha_envio, tb.proveedor, tb.recibo_fecha_desde, ";
+  $var_sql += " sku.sku, sku.sku_readable, sku.cantidad, recep_grp.cantidad as 'qty', commento.comentario, ";
+  $var_sql += " CASE ";
+  $var_sql += " WHEN (sku.cantidad - recep_grp.cantidad) is not null THEN (sku.cantidad - recep_grp.cantidad) ";
+  $var_sql += " WHEN (sku.cantidad - recep_grp.cantidad) is null THEN sku.cantidad ";
+  $var_sql += " END as cantidad_restante ";
+  $var_sql += " FROM orden_de_servicio as tb  ";
+  $var_sql += " inner join orden_de_servicio_sku as sku ON tb.orden_servicio = sku.orden_servicio ";
+  $var_sql += " left join ( ";
+  $var_sql += " SELECT rec.orden_servicio, rec.sku, SUM(rec.cantidad) as cantidad ";
+  $var_sql += " FROM recepcion as rec group by rec.sku, rec.orden_servicio ";
+  $var_sql += " ) as recep_grp on tb.orden_servicio = recep_grp.orden_servicio AND sku.sku = recep_grp.sku ";
+  $var_sql += " left join ( select orden, comentario from tb_temp_movimiento where descripcion_mov = 'comentario orden servicio taller' ";
+  $var_sql += " ) as commento ON commento.orden = tb.orden_servicio ";
+  $var_sql += " WHERE tb.proveedor = '" + data.proveedor + "' AND tb.orden_servicio = '" + data.oserv + "' ";
+  $var_sql += " HAVING cantidad_restante > 1 ";
+  $var_sql += " ) AS pendiente_prov ";
+  $var_sql += " GROUP BY pendiente_prov.orden_servicio ";
+  $var_sql += " ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {} // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for(let i=0; i<rows.length; i++){  
+      var filajs = JSON.parse(rows[i].myobj);
+        var objetoArray ={
+            "orden":filajs.orden_servicio,
+            "proveedor":filajs.proveedor,
+            "fecha_creacion":filajs.fecha_envio,
+            "fecha_entrega":filajs.fecha_entrega,
+            "comentario":filajs.comentario           
+        };
+        ar[os].push(objetoArray);  
+    } //end of OP loop 
+        
+    console.log(ar[os]); 
     if(!err) {
-      res.json(rows);
+      res.send(ar[os]);
     } else {
       console.log(err);
     }
-  });
+  });// end mysqlConnection row
 });
+
+
+
+
+
+
+
+
+//----ORDEN DE SERVICIO (nivel de orden de sku dentro de OS)----------------------------------
+router.get('/ordenes_servicio/:proveedor/:oserv', isAuth, (req, res) => { //isAuth,
+  var data = {
+   "proveedor": req.params.proveedor,
+   "oserv": req.params.oserv       
+  };
+  //console.log(data.proveedor);
+
+  $var_sql = " SELECT json_object( 'orden_servicio',pendiente_prov.orden_servicio,'proveedor',pendiente_prov.proveedor,";
+  $var_sql += " 'fecha_envio',pendiente_prov.fecha_envio,'fecha_entrega',pendiente_prov.recibo_fecha_desde,";
+  $var_sql += " 'productos', JSON_ARRAY( json_object( 'sku', pendiente_prov.sku,'sku_readable',pendiente_prov.sku_readable, ";
+  $var_sql += " 'cantidad', pendiente_prov.cantidad, 'entregaConforme', pendiente_prov.cantidad_conforme, 'entregaNoConforme', pendiente_prov.cantidad_no_conforme, ";
+  $var_sql += " 'precio_unit_conIGV', pendiente_prov.precio_unit_conIGV, 'cantidad_pendiente', pendiente_prov.cantidad_pendiente ";
+  $var_sql += " ))) as myobj ";
+  $var_sql += " FROM ( ";
+  $var_sql += " SELECT tb2.orden_servicio, tb2.fecha_envio, tb2.proveedor, tb2.recibo_fecha_desde,tb2.sku,  ";
+  $var_sql += " tb2.sku_readable, tb3.cantidad, tb3.cantidad_conforme, tb3.cantidad_no_conforme, tb3.precio_unit_conIGV, ";
+  $var_sql += " CASE ";
+  $var_sql += " WHEN (tb3.cantidad - tb3.cantidad_conforme - tb3.cantidad_no_conforme) is not null THEN (tb3.cantidad - tb3.cantidad_conforme - tb3.cantidad_no_conforme) ";
+  $var_sql += " WHEN (tb3.cantidad - tb3.cantidad_conforme - tb3.cantidad_no_conforme) is null THEN tb3.cantidad ";
+  $var_sql += " END as cantidad_pendiente ";
+  $var_sql += " FROM( SELECT tb.orden_servicio, tb.fecha_envio, tb.proveedor, tb.recibo_fecha_desde, sku.sku, sku.sku_readable, sku.cantidad, recep_grp.cantidad as 'qty',";
+  $var_sql += " CASE WHEN (sku.cantidad - recep_grp.cantidad) is not null THEN (sku.cantidad - recep_grp.cantidad) ";
+  $var_sql += " WHEN (sku.cantidad - recep_grp.cantidad) is null THEN sku.cantidad END as cantidad_restante ";
+  $var_sql += " FROM orden_de_servicio as tb inner join orden_de_servicio_sku as sku ON tb.orden_servicio = sku.orden_servicio ";
+  $var_sql += " left join ( SELECT rec.orden_servicio, rec.sku, SUM(rec.cantidad) as cantidad ";
+  $var_sql += " FROM recepcion as rec group by rec.sku, rec.orden_servicio ) as recep_grp on tb.orden_servicio = recep_grp.orden_servicio AND sku.sku = recep_grp.sku ";
+  $var_sql += " WHERE tb.proveedor = '" + data.proveedor + "' AND tb.orden_servicio = '" + data.oserv + "' HAVING cantidad_restante > 0 ";
+  $var_sql += " ) as tb2 INNER JOIN ( ";
+  $var_sql += " SELECT tb.categoria, tb.proveedor, tb.orden_servicio, tb.orden_corte, tb.sku, tb.sku_readable, tb.cantidad,  tb.sku_catalogo_readable, tb.cantidad_conforme, tb.cantidad_no_conforme,  CASE  WHEN tb_precio.costo_unitario_conIGV  is NULL THEN '-'  WHEN tb_precio.costo_unitario_conIGV > 0 THEN tb_precio.costo_unitario_conIGV  END as precio_unit_conIGV  FROM (  SELECT env2.orden_servicio, env2.orden_corte, env2.sku, env2.sku_readable, env2.cantidad,  env2.categoria,env2.proveedor,env2.sku_catalogo_readable,env2.sku_catalogo,  CASE  WHEN tb_conforme.cantidad_conforme is NULL THEN 0  WHEN tb_conforme.cantidad_conforme > 0 THEN tb_conforme.cantidad_conforme  END as cantidad_conforme,  CASE  WHEN tb_no_conforme.cantidad_no_conforme is NULL THEN 0  WHEN tb_no_conforme.cantidad_no_conforme > 0 THEN tb_no_conforme.cantidad_no_conforme  END as cantidad_no_conforme  FROM (  SELECT env.orden_servicio, env.orden_corte, env.sku, env.sku_readable, env.cantidad,  (SELECT categoria FROM sku WHERE sku.sku = env.sku limit 1) AS 'categoria',  (SELECT proveedor FROM orden_de_servicio WHERE orden_de_servicio.orden_servicio = env.orden_servicio limit 1) AS 'proveedor',  (SELECT sku.sku_catalogo_readable FROM sku WHERE sku.sku = env.sku limit 1) AS 'sku_catalogo_readable',  (SELECT sku.sku_catalogo FROM sku WHERE sku.sku = env.sku limit 1) AS 'sku_catalogo'  FROM orden_de_servicio_sku as env  ) as env2  LEFT JOIN (  SELECT orden_servicio, sku,  SUM(cantidad) as 'cantidad_conforme'  FROM recepcion  WHERE estado_sku = 'conforme'  GROUP BY orden_servicio, sku  HAVING cantidad_conforme > 0  ) as tb_conforme  ON env2.orden_servicio = tb_conforme.orden_servicio AND env2.sku_catalogo = tb_conforme.sku  LEFT JOIN (  SELECT orden_servicio, sku,  SUM(cantidad) as 'cantidad_no_conforme'  FROM recepcion  WHERE estado_sku = 'no-conforme'  GROUP BY orden_servicio, sku  HAVING cantidad_no_conforme > 0  ) as tb_no_conforme ON env2.orden_servicio = tb_no_conforme.orden_servicio AND env2.sku_catalogo = tb_no_conforme.sku ";
+  $var_sql += " WHERE env2.orden_servicio = '" + data.oserv + "' ) as tb ";
+  $var_sql += " LEFT JOIN precios_proveedor AS tb_precio  ON tb.proveedor = tb_precio.proveedor ";
+  $var_sql += " AND tb.categoria = tb_precio.categoria_sku ) as tb3 ";
+  $var_sql += " ON tb2.orden_servicio = tb3.orden_servicio AND tb2.sku = tb3.sku ";
+  $var_sql += " ) AS pendiente_prov ";
+
+
+  //console.log($var_sql);
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    
+    var ar = {} // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for(let i=0; i<rows.length; i++){  
+      var filajs = JSON.parse(rows[i].myobj);
+        var objetoArray ={
+            "orden":filajs.orden_servicio,
+            "proveedor":filajs.proveedor,
+            "fecha_creacion":filajs.fecha_envio,
+            "fecha_entrega":filajs.fecha_entrega,
+            "comentario":filajs.comentario,
+            "productos":filajs.productos
+        };
+        ar[os].push(objetoArray);  
+    } //end of OP loop 
+        
+    console.log(ar[os]); 
+        if(!err) {
+          res.send(ar[os]);
+        } else {
+          console.log(err);
+        }
+  });// end mysqlConnection row
+});
+
+//----Comentarios por ordenes de servicio----------------------------------
+// http://localhost:3006/info/os_comentarios/OS-2020-7-5v2
+router.get('/os_comentarios/:oserv', isAuth,(req, res) => { //isAuth,
+  var data = {
+   "oserv": req.params.oserv       
+  };
+
+  $var_sql = " SELECT json_object('orden_servicio',com.orden,'comentario',com.comentario, ";
+  $var_sql += " 'usuario', com.usuario,'fecha_creacion',com.created_at) as myobj ";
+  $var_sql += " FROM( ";
+  $var_sql += " select mov_id, orden, comentario, usuario, created_at ";
+  $var_sql += " from tb_temp_movimiento ";
+  $var_sql += " where descripcion_mov = 'comentario orden servicio taller' and estado <> 'no_activo' ";
+  $var_sql += " and orden = '" + data.oserv + "' order by mov_id ";
+  $var_sql += " ) as com ";
+  $var_sql += " ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    
+    var ar = {} // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for(let i=0; i<rows.length; i++){  
+      var filajs = JSON.parse(rows[i].myobj);
+        var objetoArray ={
+            "orden_servicio":filajs.orden_servicio,
+            "comentario":filajs.comentario,
+            "usuario":filajs.usuario,
+            "fecha_creacion":filajs.fecha_creacion
+        };
+        ar[os].push(objetoArray);  
+    } //end of OP loop 
+        
+    console.log(ar[os]); 
+        if(!err) {
+          res.send(ar[os]);
+        } else {
+          console.log(err);
+        }
+  });// end mysqlConnection row
+});
+
 
 
 

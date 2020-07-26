@@ -7,12 +7,12 @@ const mysqlConnection  = require('../database.js');
 
 
 exports.login = (req, res, next) => {
-  const email = req.body.email;
+  const user_name = req.body.user_wms;
   const password = req.body.password;
   let loadedUser;
 
   //Evaluar si existe ese input mail en la DB(Mysql)
-  $var_sql = "SELECT COUNT(*) FROM tb_usuarios WHERE email = '" + email + "' ";
+  $var_sql = "SELECT COUNT(*) FROM supplier WHERE nombre = '" + user_name + "' ";
   //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
@@ -20,11 +20,11 @@ exports.login = (req, res, next) => {
       
       const token = jwt.sign(
         {
-          email: email
+          email: user_name
           
         },
         'somesuperyoshiosecretpassword',
-        { expiresIn: '1h' } //en una hora muere la session token
+        { expiresIn: '6h' } //en una hora muere la session token
       );
       console.log(token);
       res.status(200).json({ token: token });
