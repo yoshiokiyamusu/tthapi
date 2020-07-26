@@ -1,14 +1,16 @@
 
-
-
-------------------------------------
 git init
 git add .
-git commit -m "branch14may"
-git remote add api_tol_proveedor2 https://github.com/yoshiokiyamusu/api_tol_proveedor2.git
-git push -u api_tol_proveedor2 master
+git commit -m "branch25jul"
 
-git push api_tol_proveedor2 master
+//-----para guardar ---------------------------------------------------------------
+git add .
+git commit -m "branch25jul"
+git push -u api_tol_wms master
+
+git remote add api_tol_wms https://github.com/yoshiokiyamusu/api_tol_wms.git
+
+//--------------------------------------------------------------------
 
 //para crear una rama
 git checkout -b branch14may     (nuevo)
@@ -18,3 +20,4 @@ git push api_tol_proveedor2 branch14may
 //para hacer el merge de rama a master: hla
 git checkout master
 git merge branch14may
+
