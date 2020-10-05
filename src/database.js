@@ -1,11 +1,11 @@
-const mysql = require('mysql');
+const mysql = require("mysql");
 
 const mysqlConnection = mysql.createConnection({
-  host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-  user: 'mlq7ddpaya3gnozv',
-  password: 'n4slsu3xuaiqtbgd',
-  database: 'szps1l4ru1pkph3s',
-  multipleStatements: true
+  host: "ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+  user: "mlq7ddpaya3gnozv",
+  password: "n4slsu3xuaiqtbgd",
+  database: "szps1l4ru1pkph3s",
+  multipleStatements: true,
 });
 
 mysqlConnection.connect(function (err) {
@@ -13,12 +13,11 @@ mysqlConnection.connect(function (err) {
     console.error(err);
     return;
   } else {
-    console.log('db is connected');
+    console.log("db is connected");
   }
 });
 
 module.exports = mysqlConnection;
-
 
 /*
 heroku TOL
@@ -39,7 +38,14 @@ const mysqlConnection = mysql.createConnection({
   multipleStatements: true
 });
 
+//Push to Github:
+git add .
+git commit -m "comment"
+git push api_tol_wms master
 
+git remote -v
+git status
+api_tol_wms
 
 
 
