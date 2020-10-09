@@ -49,6 +49,6 @@ router.post(
 );
 
 // POST http://localhost:3006/write/upload | Post cargar fotos docs en Digital Ocean
-router.post("/upload", isAuth, upload, writeController.uploadFile);
+router.post("/upload", upload, writeController.uploadFile); //isAuth,
 
 module.exports = router;
