@@ -1,11 +1,9 @@
 
-git init
-git add .
-git commit -m "branch25jul"
+
 
 //-----para guardar ---------------------------------------------------------------
 git add .
-git commit -m "branch25jul"
+git commit -m "skucatalog"
 git push -u api_tol_wms master
 
 git remote add api_tol_wms https://github.com/yoshiokiyamusu/api_tol_wms.git
