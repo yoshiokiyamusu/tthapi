@@ -21,3 +21,18 @@ git push api_tol_proveedor2 branch14may
 git checkout master
 git merge branch14may
 
+---- SQL Query json format ---- 
+
+SELECT json_object( 
+ 'orden_servicio', pendiente_prov.orden_servicio,
+ 'proveedor', pendiente_prov.proveedor, 
+ 'productos', JSON_ARRAY( 
+   json_object( 
+	  'sku', pendiente_prov.sku,
+	  'sku_readable', pendiente_prov.sku_readable,  
+	  'cantidad', pendiente_prov.cantidad
+  )
+)) as myobj  
+FROM (  
+  -- Normal SQL statement
+) AS pendiente_prov

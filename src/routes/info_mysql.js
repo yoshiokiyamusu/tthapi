@@ -336,7 +336,7 @@ router.get("/ordenes_servicio/:proveedor/:oserv", (req, res) => {
     proveedor: req.params.proveedor,
     oserv: req.params.oserv,
   };
-  //console.log(data.proveedor);
+  console.log(data.proveedor);
 
   $var_sql =
     " SELECT json_object( 'orden_servicio',pendiente_prov.orden_servicio,'proveedor',pendiente_prov.proveedor,";
@@ -416,6 +416,97 @@ router.get("/ordenes_servicio/:proveedor/:oserv", (req, res) => {
     }
   }); // end mysqlConnection row
 });
+
+
+
+
+
+
+// @desc      Get categoria y color_sku_catalogo (Collapse titulo)
+// @route     GET http://localhost:3006/info/orden_servicio/categorias/:oserv
+// @access    Private
+router.get("/orden_servicio/categorias/:oserv", isAuth, (req, res) => { //isAuth,
+  var data = {oserv: req.params.oserv };
+  console.log('yoshio'); 
+  console.log(data.oserv);
+
+  $var_sql = " SELECT json_object('categoria',campo.categoria,'color_sku_catalogo',campo.color_sku_catalogo) as myobj ";
+  $var_sql += " FROM (  ";
+  $var_sql += " SELECT DISTINCT categoria, color_sku_catalogo FROM sku WHERE sku IN (SELECT DISTINCT sku FROM orden_de_servicio_sku ";
+  $var_sql += " WHERE orden_servicio = '" + data.oserv + "' )";
+  $var_sql += " ) AS campo ";
+  console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {}; // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      var filajs = JSON.parse(rows[i].myobj);
+      var objetoArray = {
+        categoria: filajs.categoria,
+        color_sku_catalogo: filajs.color_sku_catalogo
+      };
+      ar[os].push(objetoArray);
+    } //end of OP loop
+
+    console.log(ar[os]);
+    if (!err) {
+      res.send(ar[os]);
+    } else {
+      console.log(err);
+    }
+  }); // end mysqlConnection row
+});
+
+// @desc      Get categoria y color_sku_catalogo (Collapse titulo)
+// @route     GET http://localhost:3006/info/orden_servicio/categorias/sku_catalogo/:oserv
+// @access    Public
+router.get("/orden_servicio/categorias/sku_catalogo/:oserv", isAuth, (req, res) => { //isAuth,
+  var data = {oserv: req.params.oserv};
+  console.log(data.oserv); 
+
+  $var_sql = " SELECT json_object('orden_servicio', campo.orden_servicio,'categoria', campo.categoria,'sku_catalogo_readable', campo.sku_catalogo_readable, 'cantidad', campo.cantidad,'color_sku_catalogo', campo.color_sku_catalogo) as myobj ";
+  $var_sql += " FROM ( ";
+  $var_sql += " SELECT DISTINCT os_sku.orden_servicio, sku.categoria, sku.sku_catalogo_readable, os_sku.cantidad, sku.color_sku_catalogo ";
+  $var_sql += " FROM orden_de_servicio_sku as os_sku ";
+  $var_sql += " INNER JOIN sku ON sku.sku = os_sku.sku ";
+  $var_sql += " WHERE  orden_servicio = '" + data.oserv + "' ";
+  $var_sql += " ) AS campo ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {}; // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      var filajs = JSON.parse(rows[i].myobj);
+      var objetoArray = {
+        orden_servicio: filajs.orden_servicio,
+        categoria: filajs.categoria,
+        sku_catalogo_readable: filajs.sku_catalogo_readable,
+        cantidad: filajs.cantidad,
+        color_sku_catalogo: filajs.color_sku_catalogo
+      };
+      ar[os].push(objetoArray);
+    } //end of OP loop
+
+    //console.log(ar[os]);
+    if (!err) {
+      res.send(ar[os]);
+    } else {
+      console.log(err);
+    }
+  }); // end mysqlConnection row
+});
+
+
+
+
+
+
 
 //----Comentarios por ordenes de servicio----------------------------------
 // http://localhost:3006/info/os_comentarios/OS-2020-7-5v2
