@@ -503,6 +503,46 @@ router.get("/orden_servicio/categorias/sku_catalogo/:oserv", isAuth, (req, res) 
 });
 
 
+// @desc      Get trial nested json query
+// @route     GET http://localhost:3006/info/orden_servicio/categorias/sku_catalogo/v2/:oserv
+// @access    Private
+router.get("/orden_servicio/categorias/sku_catalogo/v2/:oserv", isAuth, (req, res) => { //isAuth,
+  var data = {oserv: req.params.oserv};
+  console.log(data.oserv); 
+
+  $var_sql = "  SELECT json_object('OS',tb1.orden_servicio,'prov',tb1.proveedor, ";
+  $var_sql += " 'os_skus', JSON_EXTRACT(IFNULL((SELECT CONCAT('[',GROUP_CONCAT( json_object('sku',sku,'cantidad',cantidad) ),']') ";
+  $var_sql += " FROM orden_de_servicio_sku where orden_servicio = tb1.orden_servicio),'[]'),'$'), ";
+  $var_sql += " 'os_pendientes', JSON_EXTRACT(IFNULL((SELECT CONCAT('[',GROUP_CONCAT( json_object('prov',proveedor,'cantidad',numOS) ),']') ";
+  $var_sql += " From ( SELECT proveedor, count(*) as numOS FROM orden_de_servicio GROUP BY proveedor ) as tb where tb.proveedor = tb1.proveedor),'[]'),'$') ";
+  $var_sql += " ) as myobj FROM orden_de_servicio tb1 ";
+  $var_sql += " ";
+  console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {}; // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      var filajs = JSON.parse(rows[i].myobj);
+      var objetoArray = {
+        orden_servicio: filajs.OS,
+        proveedor: filajs.prov,
+        productos: filajs.os_skus,
+        os_pendientes: filajs.os_pendientes
+      };
+      ar[os].push(objetoArray);
+    } //end of OP loop
+
+    //console.log(ar[os]);
+    if (!err) {
+      res.send(ar[os]);
+    } else {
+      console.log(err);
+    }
+  }); // end mysqlConnection row
+});
 
 
 

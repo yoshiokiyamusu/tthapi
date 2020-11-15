@@ -1,11 +1,12 @@
 const mysql = require("mysql");
 
 const mysqlConnection = mysql.createConnection({
-  host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-  user: 'mlq7ddpaya3gnozv',
-  password: 'n4slsu3xuaiqtbgd',
-  database: 'szps1l4ru1pkph3s',
-  multipleStatements: true,
+  host: 'klbcedmmqp7w17ik.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+  user: 'nbl3g3rfgr9zmzlp',
+  password: 'nl6fxqx5cxwy81hv',
+  database: 'zau1dw9gx8qcfum4',
+  multipleStatements: true
+ 
 });
 
 mysqlConnection.connect(function (err) {
@@ -20,6 +21,18 @@ mysqlConnection.connect(function (err) {
 module.exports = mysqlConnection;
 
 /*
+Heroku TOL Maria DB
+const mysqlConnection = mysql.createConnection({
+  host: 'klbcedmmqp7w17ik.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+  user: 'nbl3g3rfgr9zmzlp',
+  password: 'nl6fxqx5cxwy81hv',
+  database: 'zau1dw9gx8qcfum4',
+  multipleStatements: true
+ 
+});
+
+
+
 heroku TOL
 const mysqlConnection = mysql.createConnection({
   host: 'ysp9sse09kl0tzxj.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
