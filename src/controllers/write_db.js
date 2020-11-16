@@ -1,3 +1,4 @@
+
 const { validationResult } = require("express-validator/check");
 //const Book = require('../models/write_db.js');
 const mysqlConnection = require("../database.js");
@@ -90,6 +91,7 @@ exports.post_os_image = (req, res, next) => {
 
 // POST comentarios de proveedor, en base a cierta orden
 exports.post_comment_proveedor = (req, res, next) => {
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Validation fallo.");
@@ -112,19 +114,19 @@ exports.post_comment_proveedor = (req, res, next) => {
   $var_sql +=
     "VALUES ('" +
     nombre_mov +
-    "','" +
-    orden +
-    "','" +
+    "'," +
+    mysqlConnection.escape(orden) +
+    ",'" +
     sku +
     "'," +
     cantidad +
     ",'" +
     descripcion_mov +
-    "','" +
-    comentario +
-    "','" +
-    usuario +
-    "','" +
+    "'," +
+    mysqlConnection.escape(comentario) +
+    "," +
+    mysqlConnection.escape(usuario) +
+    ",'" +
     estado +
     "') ";
   console.log($var_sql);

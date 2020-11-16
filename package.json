@@ -15,9 +15,11 @@
     "mongodb": "^3.5.7",
     "mongoose": "^5.10.7",
     "morgan": "^1.10.0",
+    "mssql": "^6.2.3",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
     "mysql": "^2.18.1",
+    "mysql-native": "^0.4.7",
     "nodemon": "^2.0.4"
   },
   "devDependencies": {},

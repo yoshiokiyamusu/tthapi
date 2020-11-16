@@ -3,7 +3,7 @@
 
 //-----para guardar ---------------------------------------------------------------
 git add .
-git commit -m "skucatalog"
+git commit -m "maria db"
 git push -u api_tol_wms master
 
 git remote add api_tol_wms https://github.com/yoshiokiyamusu/api_tol_wms.git

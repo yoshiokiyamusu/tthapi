@@ -28,10 +28,7 @@ const mysqlConnection = mysql.createConnection({
   password: 'nl6fxqx5cxwy81hv',
   database: 'zau1dw9gx8qcfum4',
   multipleStatements: true
- 
 });
-
-
 
 heroku TOL
 const mysqlConnection = mysql.createConnection({
