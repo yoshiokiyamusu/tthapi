@@ -1,3 +1,7 @@
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 const aws = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -17,12 +21,12 @@ const upload = multer({
     acl: "public-read",
     metadata: (req, file, cb) => {
       cb(null, {
-        fieldName: file.fieldname + "-" + Date.now(), //Asignar el nombre original del archivo
-      });
+        fieldName: file.fieldname + '001' + '-' + Date.now(), //Asignar el nombre original del archivo
+      }); 
     },
     key: (request, file, cb) => {
-      //console.log(file);
-      cb(null, file.originalname); //Agregar la extension al archivo subido
+      console.log(file);
+      cb(null, getRandomInt(1,1000)+'_'+file.originalname ); //Agregar la extension al archivo subido
     },
   }),
 }).array("file"); //Es como un elementListener, "single" es para subir 1 solo archivo "array" es para multiples archivos //"upload" es el nombre la ruta donde esta el formulario

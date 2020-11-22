@@ -264,9 +264,9 @@ exports.uploadFile = async (req, res, next) => {
     $var_sql =
       "INSERT INTO tb_imagen (orden_servicio, nombre, url, estado, descripcion)";
     $var_sql +=
-      " VALUES ('" +
-      orden_servicio +
-      "','" +
+      " VALUES (" +
+      mysqlConnection.escape(orden_servicio) +
+      ",'" +
       nombre +
       "','" +
       url +
@@ -292,6 +292,43 @@ exports.uploadFile = async (req, res, next) => {
   } //END Loop
   // Redirect to the initial page
   res.status(200).json({
+    success: true,
+    mensaje: "Se recepciono el archivo exitosamente",
+  });
+};
+
+
+
+//POST upload fotos de archivos - Color Pic
+exports.colorPic = async (req, res, next) => {
+  //const token = localStorage.getItem('token');
+
+  for (var i = 0; i < req.files.length; i++) {
+    //Insert into Mysql color
+    const nombre = req.body.nombre;
+    const descripcion = req.body.descripcion;
+    const url = req.files[i].location;
+    const estado = "1";
+    const usuario = req.body.usuario;
+    
+    $var_sql = "INSERT INTO color (nombre, descripcion, img_url, estado, usuario )";
+    $var_sql += " VALUES (" + mysqlConnection.escape(nombre) + "," + mysqlConnection.escape(descripcion) + ",'" + url + "','" + estado + "','" + usuario + "') ";
+    console.log($var_sql);
+
+    mysqlConnection.query($var_sql, (err, rows, fields) => {
+      if (!err) {
+        /* res.status(201).json({
+          message_post: "Imagen guardada",
+          nombre: nombre
+        });
+       */
+      } else {
+        console.log(err);
+      }
+    });
+  } //END Loop
+  // Redirect to the initial page
+  res.status(201).json({
     success: true,
     mensaje: "Se recepciono el archivo exitosamente",
   });
