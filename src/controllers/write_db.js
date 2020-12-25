@@ -333,3 +333,78 @@ exports.colorPic = async (req, res, next) => {
     mensaje: "Se recepciono el archivo exitosamente",
   });
 };
+
+
+// POST purchased sku from woocommerce ordeners
+exports.post_woo_orden_sku = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+
+  //parametros, values to insert
+  const orden_id = req.body.orden_id;
+  const sku = req.body.sku_pack;
+  const nombre_sku = req.body.sku_nombre;
+  const talla = req.body.talla;
+  const color = req.body.color;
+  const cantidad = req.body.cantidad;
+  const created_at = new Date().toISOString();
+  
+  $var_sql =
+    "INSERT INTO woo_order_b2c_producto (orden_id, sku, nombre_sku, talla, color, cantidad) ";
+  $var_sql +=
+    "VALUES ('" + orden_id + "','" + sku + "','" + nombre_sku + "','" + talla + "','" + color + "','" + cantidad + "') ";
+  console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res
+        .status(201)
+        .json({ message_post: "Información guardada", orderId: orden_id });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+
+}; //END function
+
+// POST purchased sku from woocommerce ordeners
+exports.post_woo_orden = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+
+  //parametros, values to insert
+  const orden_id = req.body.orden_id;
+  const nombre_cliente = req.body.nombre_cliente;
+  const fecha_orden = req.body.fecha_orden;
+  const estado = req.body.estado;
+  const created_at = new Date().toISOString();
+  
+  $var_sql =
+    "INSERT INTO woo_order_b2c_cliente (orden_id, nombre_cliente, fecha_orden, estado) ";
+  $var_sql +=
+    "VALUES ('" + orden_id + "','" + nombre_cliente + "','" + fecha_orden + "','" + estado + "') ";
+  console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res
+        .status(201)
+        .json({ message_post: "Información guardada", orderId: orden_id });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+
+}; //END function
