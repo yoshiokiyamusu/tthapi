@@ -657,4 +657,126 @@ router.get("/json_nested", (req, res) => {
   });
 });
 
+
+// http://localhost:3006/info/woo_orden_sku
+router.get("/woo_orden_sku", isAuth, (req, res) => {
+  //isAuth,
+  var data = {
+    oserv: req.params.oserv,
+  };
+
+  $var_sql =" SELECT json_object('cod_orden_despacho',com.cod_orden_despacho, ";
+  $var_sql += " 'tol_sku',com.tol_sku,'cantidad_despacho', com.cantidad_despacho,'orden_id', ";
+  $var_sql += " com.orden_id) as myobj ";
+  $var_sql += " FROM( ";
+  $var_sql += " SELECT DISTINCT concat('OD','-',YEAR(woo.created_at),'-',MONTH(woo.created_at),'-',DAY(woo.created_at),'v',woo.orden_id) as 'cod_orden_despacho', ";
+  $var_sql += " conver.tol_sku, (woo.cantidad * conver.tol_cantidad) as 'cantidad_despacho',cliente.orden_id ";
+  $var_sql += " FROM( ";
+  $var_sql += " SELECT concat(sku,'_',talla,'_',color) as concatenado, ";
+  $var_sql += " orden_id, sku, nombre_sku, talla, color, cantidad, created_at ";
+  $var_sql += " FROM woo_order_b2c_producto ";
+  $var_sql += " ) AS woo LEFT JOIN ( ";
+  $var_sql += " select concat(eco_sku,'_',eco_talla,'_',eco_color) as concatenado, ";
+  $var_sql += " eco_sku, eco_talla, eco_color, tol_sku, tol_cantidad ";
+  $var_sql += " from ecommerce_tol_conversion ";
+  $var_sql += " ) as conver ON woo.concatenado = conver.concatenado ";
+  $var_sql += " INNER JOIN woo_order_b2c_cliente as cliente ";
+  $var_sql += " ON woo.orden_id = cliente.orden_id ";
+  $var_sql += " WHERE conver.eco_sku IS NOT NULL ";
+  $var_sql += " AND cliente.orden_id NOT IN (SELECT DISTINCT od.nota_pedido from orden_despacho as od) ";
+  $var_sql += " ) as com ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {}; // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      var filajs = JSON.parse(rows[i].myobj);
+      var objetoArray = {
+        cod_orden_despacho: filajs.cod_orden_despacho,
+        sku: filajs.tol_sku,
+        cantidad_despacho: filajs.cantidad_despacho,
+        orden_id: filajs.orden_id,
+      };
+      ar[os].push(objetoArray);
+    } //end of OP loop
+
+    //console.log(ar[os]);
+    if (!err) {
+      res.send(ar[os]);
+    } else {
+      console.log(err);
+    }
+  }); // end mysqlConnection row
+});
+
+
+// http://localhost:3006/info/woo_orden
+router.get("/woo_orden", isAuth, (req, res) => {
+  //isAuth,
+  var data = {
+    oserv: req.params.oserv,
+  };
+
+  $var_sql =" SELECT json_object('cod_orden_despacho',com.cod_orden_despacho, ";
+  $var_sql += " 'fecha_creacion',DATE(com.fecha_creacion),'fecha_despacho', DATE(com.fecha_despacho),'nombre_cliente',com.nombre_cliente,'nota_pedido', ";
+  $var_sql += " com.nota_pedido) as myobj ";
+  $var_sql += " FROM( ";
+  $var_sql += " SELECT DISTINCT tb1.cod_orden_despacho,DATE(tb1.fecha_creacion) as 'fecha_creacion', DATE(tb1.fecha_despacho) as 'fecha_despacho', ";
+  $var_sql += " tb1.nombre_cliente, tb1.nota_pedido ";
+  $var_sql += " FROM ( ";
+  $var_sql += " SELECT DISTINCT concat('OD','-',YEAR(woo.created_at),'-',MONTH(woo.created_at),'-',DAY(woo.created_at),'v',woo.orden_id) as 'cod_orden_despacho', ";
+  $var_sql += " woo.created_at as 'fecha_creacion', ";
+  $var_sql += " CASE WHEN WEEKDAY(woo.created_at + INTERVAL 2 DAY) IN (5,6) THEN woo.created_at + INTERVAL 3 DAY ";
+  $var_sql += " ELSE (woo.created_at + INTERVAL 2 DAY) END AS 'fecha_despacho', ";
+  $var_sql += " cliente.nombre_cliente as 'nombre_cliente', cliente.orden_id as 'nota_pedido' ";
+  $var_sql += " FROM( ";
+  $var_sql += " SELECT concat(sku,'_',talla,'_',color) as concatenado, ";
+  $var_sql += " orden_id, sku, nombre_sku, talla, color, cantidad, created_at ";
+  $var_sql += " FROM woo_order_b2c_producto ";
+  $var_sql += " ) AS woo LEFT JOIN ( ";
+  $var_sql += " select concat(eco_sku,'_',eco_talla,'_',eco_color) as concatenado, ";
+  $var_sql += " eco_sku, eco_talla, eco_color, tol_sku, tol_cantidad ";
+  $var_sql += " from ecommerce_tol_conversion ";
+  $var_sql += " ) as conver ON woo.concatenado = conver.concatenado ";
+  $var_sql += " INNER JOIN woo_order_b2c_cliente as cliente ";
+  $var_sql += " ON woo.orden_id = cliente.orden_id ";
+  $var_sql += " WHERE conver.eco_sku IS NOT NULL ";
+  $var_sql += " AND cliente.orden_id NOT IN (SELECT DISTINCT od.nota_pedido from orden_despacho as od) ";
+  $var_sql += " ) as tb1 ";
+  $var_sql += " ) as com ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {}; // empty Object
+    var os = "prods";
+    ar[os] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      var filajs = JSON.parse(rows[i].myobj);
+      var objetoArray = {
+        cod_orden_despacho: filajs.cod_orden_despacho,
+        fecha_creacion: filajs.fecha_creacion,
+        fecha_despacho: filajs.fecha_despacho,
+        nombre_cliente: filajs.nombre_cliente,
+        nota_pedido: filajs.nota_pedido,
+      };
+      ar[os].push(objetoArray);
+    } //end of OP loop
+
+    //console.log(ar[os]);
+    if (!err) {
+      res.send(ar[os]);
+    } else {
+      console.log(err);
+    }
+  }); // end mysqlConnection row
+});
+
+
+
+
+
 module.exports = router;
