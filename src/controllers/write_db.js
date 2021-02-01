@@ -167,7 +167,7 @@ exports.post_comment_inactivo_os = (req, res, next) => {
   $var_sql += " AND comentario = '" + comentario + "' ";
   $var_sql += " AND usuario = '" + usuario + "' ";
 
-  console.log($var_sql);
+  //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {

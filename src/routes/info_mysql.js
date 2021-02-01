@@ -659,7 +659,7 @@ router.get("/json_nested", (req, res) => {
 
 
 // http://localhost:3006/info/woo_orden_sku
-router.get("/woo_orden_sku", isAuth, (req, res) => {
+router.get("/woo_orden_sku", (req, res) => {
   //isAuth,
   var data = {
     oserv: req.params.oserv,
@@ -714,7 +714,7 @@ router.get("/woo_orden_sku", isAuth, (req, res) => {
 
 
 // http://localhost:3006/info/woo_orden
-router.get("/woo_orden", isAuth, (req, res) => {
+router.get("/woo_orden", (req, res) => {
   //isAuth,
   var data = {
     oserv: req.params.oserv,
