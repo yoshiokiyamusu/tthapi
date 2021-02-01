@@ -29,6 +29,7 @@ const mysqlConnection = mysql.createConnection({
   multipleStatements: true
 });
 
+Heroku TOL Maria DB (Practica)
 const mysqlConnection = mysql.createConnection({
   host: 'un0jueuv2mam78uv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
   user: 'o4ss489wi958kx63',

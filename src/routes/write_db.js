@@ -55,18 +55,32 @@ router.post("/upload", upload, writeController.uploadFile); //isAuth,
 // POST http://localhost:3006/write/colorPic | Post cargar fotos docs en Digital Ocean
 router.post("/colorPic", upload, writeController.colorPic); //isAuth,
 
-// POST http://localhost:3006/write/woo_orden_sku | Trial subir woo ordenes
+// POST http://localhost:3006/write/woo_orden_sku | subir woo ordenes por orden de compra
 router.post(
   "/woo_orden_sku",
   [body("orden_id").trim().not().isEmpty().isLength({ min: 1 })],
   writeController.post_woo_orden_sku
 );
 
-// POST http://localhost:3006/write/woo_orden | Trial subir woo ordenes
+// POST http://localhost:3006/write/woo_orden | subir woo ordenes por SKU de orden de compra
 router.post(
   "/woo_orden",
   [body("orden_id").trim().not().isEmpty().isLength({ min: 1 })],
   writeController.post_woo_orden
+);
+
+// POST http://localhost:3006/write/woo_orden_despacho | Poblar tabla mysql orden despacho con api de woo ordenes 
+router.post(
+  "/woo_orden_despacho",
+  [body("cod_orden_despacho").trim().not().isEmpty().isLength({ min: 1 })],
+  writeController.post_woo_orden_despacho
+);
+
+// POST http://localhost:3006/write/woo_orden_despacho_Sku | Poblar tabla mysql orden despachoSKU con api de woo ordenes 
+router.post(
+  "/woo_orden_despacho_sku",
+  [body("cod_orden_despacho").trim().not().isEmpty().isLength({ min: 1 })],
+  writeController.post_woo_orden_despacho_sku
 );
 
 module.exports = router;

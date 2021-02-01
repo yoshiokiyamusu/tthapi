@@ -335,6 +335,83 @@ exports.colorPic = async (req, res, next) => {
 };
 
 
+// POST poblar tabla orden_despacho
+exports.post_woo_orden_despacho = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+
+  //parametros, values to insert
+  const cod_orden_despacho = req.body.cod_orden_despacho;
+  const fecha_creacion = req.body.fecha_creacion;
+  const fecha_despacho = req.body.fecha_despacho;
+  const tipo_despacho = 'cliente_pedido';
+  const nombre_cliente = req.body.nombre_cliente;
+  const nota_pedido = req.body.nota_pedido;
+  const detalles = '-';
+  const status = 'por_despachar';
+
+  $var_sql =
+    "INSERT INTO orden_despacho (cod_orden_despacho, fecha_creacion, fecha_despacho, tipo_despacho, nombre_cliente, nota_pedido, detalles, status) ";
+  $var_sql +=
+    "VALUES ('" + cod_orden_despacho + "','" + fecha_creacion + "','" + fecha_despacho + "','" + tipo_despacho + "','" + nombre_cliente + "','" + nota_pedido + "','" + detalles + "','" + status + "') ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res
+        .status(201)
+        .json({ message_post: "Información guardada", order_despacho: cod_orden_despacho });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+
+}; //END function
+
+// POST poblar tabla orden_despacho_sku
+exports.post_woo_orden_despacho_sku = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+
+  //parametros, values to insert
+  const cod_orden_despacho = req.body.cod_orden_despacho;
+  const sku = req.body.sku;
+  const cantidad = req.body.cantidad;
+
+  $var_sql =
+    "INSERT INTO orden_despacho_sku (cod_orden_despacho, sku, cantidad) ";
+  $var_sql +=
+    "VALUES ('" + cod_orden_despacho + "','" + sku + "','" + cantidad + "') ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res
+        .status(201)
+        .json({ message_post: "Información guardada", order_despacho: cod_orden_despacho });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+
+
+
+
+}; //END function
+
+
 // POST purchased sku from woocommerce ordeners
 exports.post_woo_orden_sku = (req, res, next) => {
   const errors = validationResult(req);
@@ -358,7 +435,7 @@ exports.post_woo_orden_sku = (req, res, next) => {
     "INSERT INTO woo_order_b2c_producto (orden_id, sku, nombre_sku, talla, color, cantidad) ";
   $var_sql +=
     "VALUES ('" + orden_id + "','" + sku + "','" + nombre_sku + "','" + talla + "','" + color + "','" + cantidad + "') ";
-  console.log($var_sql);
+  //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {
