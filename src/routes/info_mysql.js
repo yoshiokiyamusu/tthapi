@@ -808,7 +808,7 @@ router.get("/powerbipruebaconclave",  isAuth, (req, res) => {
   };
   //console.log(data.proveedor);
 
-  $var_sql = "SELECT distinct os.orden_servicio, os.proveedor, os.fecha_envio FROM orden_de_servicio ";
+  $var_sql = "SELECT distinct os.orden_servicio, os.proveedor, DATE(os.fecha_envio) FROM orden_de_servicio ";
   $var_sql += "AS os LEFT JOIN enviados_a_servicio AS es ON os.orden_servicio = es.orden_servicio ";
   console.log($var_sql);
 
