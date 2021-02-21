@@ -24,7 +24,7 @@ exports.login = (req, res, next) => {
         const token = jwt.sign(
           {email: user_name,},
           "somesuperyoshiosecretpassword",
-          { expiresIn: "30h" } //en una hora muere la session token
+          { expiresIn: "1h" } //en una hora muere la session token
         );
         console.log(token);
         res.status(200).json({ token: token });
