@@ -827,7 +827,7 @@ router.get("/powerbipruebaconclave",  isAuth, (req, res) => {
 
 
 //SKU catalogos despachados (Historial)
-router.get("/despacho_skus",   (req, res) => { 
+router.get("/despacho_skus",  (req, res) => { 
  
   $var_sql = " SELECT stck.stock_id, tb1.fecha_creacion,stck.id_despacho, tb1.fecha_despacho, tb1.tipo_despacho,tb1.nombre_cliente, tb1.nota_pedido, tb1.detalles, ";
   $var_sql += " catalog.categoria, stck.sku,  catalog.sku_readable, catalog.color, catalog.talla, stck.cantidad, stck.nombre_operacion, stck.usuario, stck.timestamp as 'fecha_despacho_sku' ";
