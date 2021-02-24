@@ -659,7 +659,7 @@ router.get("/json_nested", (req, res) => {
 
 
 // http://localhost:3006/info/woo_orden_sku
-router.get("/woo_orden_sku",isAuth, (req, res) => {
+router.get("/woo_orden_sku", (req, res) => { //isAuth,
   //isAuth,
   var data = {
     oserv: req.params.oserv,
@@ -685,7 +685,7 @@ router.get("/woo_orden_sku",isAuth, (req, res) => {
   $var_sql += " WHERE conver.eco_sku IS NOT NULL ";
   $var_sql += " AND cliente.orden_id NOT IN (SELECT DISTINCT od.nota_pedido from orden_despacho as od) ";
   $var_sql += " ) as com ";
-  //console.log($var_sql);
+  console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     var ar = {}; // empty Object
@@ -714,8 +714,7 @@ router.get("/woo_orden_sku",isAuth, (req, res) => {
 
 
 // http://localhost:3006/info/woo_orden
-router.get("/woo_orden", isAuth,(req, res) => {
-  //isAuth,
+router.get("/woo_orden", (req, res) => { //isAuth,
   var data = {
     oserv: req.params.oserv,
   };
@@ -747,7 +746,7 @@ router.get("/woo_orden", isAuth,(req, res) => {
   $var_sql += " AND cliente.orden_id NOT IN (SELECT DISTINCT od.nota_pedido from orden_despacho as od) ";
   $var_sql += " ) as tb1 ";
   $var_sql += " ) as com ";
-  //console.log($var_sql);
+  console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     var ar = {}; // empty Object
@@ -793,7 +792,7 @@ router.get("/powerbiprueba",  (req, res) => { //isAuth,
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {
-      res.json(rows);
+      //res.json(rows);
     } else {
       console.log(err);
     }
@@ -810,7 +809,7 @@ router.get("/powerbipruebaconclave",  isAuth, (req, res) => {
 
   $var_sql = "SELECT distinct os.orden_servicio, os.proveedor, DATE(os.fecha_envio) as 'fecha_envio' FROM orden_de_servicio ";
   $var_sql += "AS os LEFT JOIN enviados_a_servicio AS es ON os.orden_servicio = es.orden_servicio ";
-  //console.log($var_sql);
+  console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {

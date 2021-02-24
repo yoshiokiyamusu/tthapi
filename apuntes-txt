@@ -34,3 +34,9 @@ SELECT json_object(
 FROM (  
   -- Normal SQL statement
 ) AS pendiente_prov
+
+
+//Articulos
+
+https://zellwk.com/blog/async-await-express/
+https://www.technicalkeeda.com/nodejs-tutorials/nodejs-mysql-multiple-statement-queries
