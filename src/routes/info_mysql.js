@@ -659,7 +659,7 @@ router.get("/json_nested", (req, res) => {
 
 
 // http://localhost:3006/info/woo_orden_sku
-router.get("/woo_orden_sku", (req, res) => { //isAuth,
+router.get("/woo_orden_sku", isAuth,(req, res) => { //isAuth,
   //isAuth,
   var data = {
     oserv: req.params.oserv,
@@ -714,7 +714,7 @@ router.get("/woo_orden_sku", (req, res) => { //isAuth,
 
 
 // http://localhost:3006/info/woo_orden
-router.get("/woo_orden", (req, res) => { //isAuth,
+router.get("/woo_orden", isAuth,(req, res) => { //isAuth,
   var data = {
     oserv: req.params.oserv,
   };
@@ -746,7 +746,7 @@ router.get("/woo_orden", (req, res) => { //isAuth,
   $var_sql += " AND cliente.orden_id NOT IN (SELECT DISTINCT od.nota_pedido from orden_despacho as od) ";
   $var_sql += " ) as tb1 ";
   $var_sql += " ) as com ";
-  console.log($var_sql);
+  //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     var ar = {}; // empty Object
