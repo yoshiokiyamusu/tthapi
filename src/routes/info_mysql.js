@@ -847,7 +847,52 @@ router.get("/despacho_skus",  (req, res) => {
 
 });
 
+//PRobar una funcion que cree tabla temporal
+function temp_table_despachado() { 
 
+  $var_sql = " CREATE TEMPORARY TABLE IF NOT EXISTS temp_despachado AS (";
+  $var_sql += " SELECT stck.stock_id, tb1.fecha_creacion,stck.id_despacho, tb1.fecha_despacho, tb1.tipo_despacho,tb1.nombre_cliente, tb1.nota_pedido, tb1.detalles, ";
+  $var_sql += " catalog.categoria, stck.sku,  catalog.sku_readable, catalog.color, catalog.talla, stck.cantidad, stck.nombre_operacion, stck.usuario, stck.timestamp as 'fecha_despacho_sku' ";
+  $var_sql += " FROM stock AS stck LEFT JOIN ";
+  $var_sql += " (SELECT cod_orden_despacho, fecha_creacion, fecha_despacho, tipo_despacho, nombre_cliente, nota_pedido, detalles from orden_despacho ) as tb1 ";
+  $var_sql += " ON stck.id_despacho = tb1.cod_orden_despacho ";
+  $var_sql += " LEFT JOIN ( SELECT catlog.categoria, catlog.sku_catalogo, catlog.sku_readable, catlog.color, catlog.talla FROM tb_sku_catalogo AS catlog ) AS catalog ";
+  $var_sql += " ON stck.sku = catalog.sku_catalogo WHERE stck.timestamp > '2020-01-01' AND stck.nombre_operacion = 'out_despacho'  ";
+  $var_sql += " )";
+  //console.log($var_sql);
 
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      //res.json(rows);
+      console.log('Tabla temporal creada');
+    } else {
+      console.log(err);
+    }
+  });
+
+};
+
+router.get("/despacho_skus_nested",  async(req, res, next) => { 
+ 
+  try {
+    await temp_table_despachado()
+  } catch (error) {
+    return next(error)
+  }
+
+  $var_sql = " Select * from temp_despachado ";
+  $var_sql += " ";
+  $var_sql += " ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+
+});
 
 module.exports = router;
