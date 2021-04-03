@@ -3,7 +3,7 @@ To execute: npm run dev
 
 //-----para guardar ---------------------------------------------------------------
 git add .
-git commit -m "maria db"
+git commit -m "Retirar isAuth"
 git push -u api_tol_wms master
 
 git remote add api_tol_wms https://github.com/yoshiokiyamusu/api_tol_wms.git

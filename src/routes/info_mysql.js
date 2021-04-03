@@ -834,8 +834,8 @@ router.get("/despacho_skus",  (req, res) => {
   $var_sql += " (SELECT cod_orden_despacho, fecha_creacion, fecha_despacho, tipo_despacho, nombre_cliente, nota_pedido, detalles from orden_despacho ) as tb1 ";
   $var_sql += " ON stck.id_despacho = tb1.cod_orden_despacho ";
   $var_sql += " LEFT JOIN ( SELECT catlog.categoria, catlog.sku_catalogo, catlog.sku_readable, catlog.color, catlog.talla FROM tb_sku_catalogo AS catlog ) AS catalog ";
-  $var_sql += " ON stck.sku = catalog.sku_catalogo WHERE stck.timestamp > '2021-01-01' AND stck.nombre_operacion = 'out_despacho'  ";
-  console.log($var_sql);
+  $var_sql += " ON stck.sku = catalog.sku_catalogo WHERE stck.timestamp > '2021-04-01' AND stck.nombre_operacion = 'out_despacho'  ";
+  //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {
