@@ -1,5 +1,8 @@
+var FormData = require('form-data');
+const fetch = require("node-fetch");
 
 const { validationResult } = require("express-validator/check");
+
 //const Book = require('../models/write_db.js');
 const mysqlConnection = require("../database.js");
 const isAuth = require("../middleware/is-auth"); //para ponerle restriccion de tocken a las funciones
@@ -59,20 +62,8 @@ exports.post_os_image = (req, res, next) => {
   const estado = req.body.estado;
   const descripcion = req.body.descripcion;
 
-  $var_sql =
-    "INSERT INTO tb_imagen (orden_servicio, nombre, url, estado, descripcion)";
-  $var_sql +=
-    " VALUES ('" +
-    orden_servicio +
-    "','" +
-    nombre +
-    "','" +
-    url +
-    "','" +
-    estado +
-    "','" +
-    descripcion +
-    "') ";
+  $var_sql = "INSERT INTO tb_imagen (orden_servicio, nombre, url, estado, descripcion)";
+  $var_sql += " VALUES ('" + orden_servicio + "','" + nombre + "','" + url + "','" + estado + "','" + descripcion + "') ";
   //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
@@ -129,7 +120,7 @@ exports.post_comment_proveedor = (req, res, next) => {
     ",'" +
     estado +
     "') ";
-  console.log($var_sql);
+  //console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {
@@ -183,9 +174,15 @@ exports.post_comment_inactivo_os = (req, res, next) => {
 
 // GET todos los comentarios de una orden de servicio
 exports.createPost2 = (req, res, next) => {
-  const title = req.body.title;
-  const content = req.body.content;
-
+  console.log(req.body);
+  //console.log(Object.entries(req.body));
+  //for (var [key, value] of Object.entries(req.body[0].title)) {
+  //  console.log(key + ' ' + value); 
+  //}
+  for (var i = 0; i < req.body.length; i++) {
+    const title = req.body[i].title;
+    const content = req.body[i].content;
+  
   $var_sql =
     "INSERT INTO books (title,content ) VALUES ('" +
     title +
@@ -194,14 +191,24 @@ exports.createPost2 = (req, res, next) => {
     "') ";
 
   console.log($var_sql);
+  } 
 
+  res.status(201).json({
+    message: "msg",
+    post: {
+      _id: new Date().toISOString(),
+      title: title,
+      content: content
+    },
+  });
+ /*
   mysqlConnection.query($var_sql, (err, rows, fields) => {
     if (!err) {
       res.json(rows);
     } else {
       console.log(err);
     }
-  });
+  });*/
 };
 
 exports.ejemplo = (req, res, next) => {
@@ -275,7 +282,7 @@ exports.uploadFile = async (req, res, next) => {
       "','" +
       descripcion +
       "') ";
-    //console.log($var_sql);
+    console.log($var_sql);
 
     mysqlConnection.query($var_sql, (err, rows, fields) => {
       if (!err) {
@@ -467,10 +474,8 @@ exports.post_woo_orden = (req, res, next) => {
   const estado = req.body.estado;
   const created_at = new Date().toISOString();
   
-  $var_sql =
-    "INSERT INTO woo_order_b2c_cliente (orden_id, nombre_cliente, fecha_orden, estado) ";
-  $var_sql +=
-    "VALUES ('" + orden_id + "','" + nombre_cliente + "','" + fecha_orden + "','" + estado + "') ";
+  $var_sql = "INSERT INTO woo_order_b2c_cliente (orden_id, nombre_cliente, fecha_orden, estado) ";
+  $var_sql += "VALUES ('" + orden_id + "','" + nombre_cliente + "','" + fecha_orden + "','" + estado + "') ";
   console.log($var_sql);
 
   mysqlConnection.query($var_sql, (err, rows, fields) => {
@@ -484,4 +489,161 @@ exports.post_woo_orden = (req, res, next) => {
     }
   });
 
+}; //END function
+
+
+
+
+
+
+
+
+
+
+
+// POST test postHref, redireccionamiento 0 | vanilla JS
+exports.post_href_0 = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+  //parametros, values to insert
+  const os = 'OS_prueba';
+  const nombre = req.body.nombre;
+  const descripcion_pic = 'Ejemplo descripcion';
+
+  var variable_http_end = 'http://localhost:3006';
+   
+  var token_v0 = req.headers['authorization']; 
+  var tokenv = token_v0.slice(7);
+  //console.log(tokenv);
+        
+  if(nombre == 'yoshio'){
+        /* Ejecutar Post api 1 */   
+        let todo = {
+          os: os,
+          nombre: nombre,
+          descripcion: descripcion_pic
+        };
+
+        fetch(variable_http_end + '/write/href1_image', {
+            method: 'POST',
+            body: JSON.stringify(todo),
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tokenv }
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            console.log('Success:', result);
+            res.status(201).json({
+              message_post: "Datos guardados input yoshio",
+              nombre: nombre,
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+  }else{
+      let todo = {
+        codigo: 'ejemplo',
+        categoria :'cat_ejemplo',
+        nombre: nombre,
+        estado: 'activo'
+      };
+      fetch(variable_http_end + '/write/href2_supplier', {
+        method: 'POST',
+        body: JSON.stringify(todo),
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tokenv }
+      })
+      .then(response => response.json())
+      .then(result => {
+          console.log(result);
+          console.log('Success:', result);
+          res.status(201).json({
+            message_post: "Datos guardados input yoshio",
+            nombre: nombre,
+          });
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  
+  }//End Else
+}; //END function
+
+
+
+
+
+
+// POST test postHref, redireccionamiento 1 | Tabla:tb_imagen
+exports.post_href_1 = (req, res, next) => {
+  const errors = validationResult(req);
+  
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+  
+  //parametros, values to insert
+  const orden_servicio = 'prueba href';
+  const nombre = req.body.nombre;
+  const url = 'prueba href';
+  const estado = 'prueba href';
+  const descripcion = 'prueba href';
+
+  $var_sql = "INSERT INTO tb_imagen (orden_servicio, nombre, url, estado, descripcion)";
+  $var_sql += " VALUES ('" + orden_servicio + "','" + nombre + "','" + url + "','" + estado + "','" + descripcion + "') ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res.status(201).json({
+        message_post: "Datos guardados",
+        nombre: nombre,
+      });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+}; //END function
+
+
+// POST test postHref, redireccionamiento 2 | Tabla:supplier
+exports.post_href_2 = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation fallo.");
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+
+  //parametros, values to insert
+  const codigo = 'prueba href';
+  const categoria = 'prueba href';
+  const nombre = req.body.nombre;
+  const estado = 'prueba href';
+
+  $var_sql = "INSERT INTO supplier (codigo, categoria, nombre, estado)";
+  $var_sql += " VALUES ('" + codigo + "','" + categoria + "','" + nombre + "','" + estado + "') ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res.status(201).json({
+        message_post: "Datos guardados",
+        nombre: nombre,
+      });
+      //res.json(rows);
+    } else {
+      console.log(err);
+    }
+  });
 }; //END function

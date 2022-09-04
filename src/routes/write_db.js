@@ -83,4 +83,27 @@ router.post(
   writeController.post_woo_orden_despacho_sku
 );
 
+//:: :: :: :: Href test :: :: :: :: :: :: :: :: :: :: :: :: 
+// POST http://localhost:3006/write/href0_redirec
+router.post(
+  "/href0_redirec",
+  [body("nombre").trim().not().isEmpty().isLength({ min: 1 })],
+  writeController.post_href_0
+);
+// POST http://localhost:3006/write/href1_image
+router.post(
+  "/href1_image",
+  isAuth,
+  [body("os").trim().not().isEmpty().isLength({ min: 1 })],
+  writeController.post_href_1
+);
+// POST http://localhost:3006/write/href2_supplier
+router.post(
+  "/href2_supplier",
+  isAuth,
+  [body("nombre").trim().not().isEmpty().isLength({ min: 1 })],
+  writeController.post_href_2
+);
+
+
 module.exports = router;

@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const mysqlConnection = require("../database.js");
 const isAuth = require("../middleware/is-auth"); //para ponerle restriccion de tocken a las funciones
+const ErrorResponse = require("../../util/errorResponse"); //para respuestas de error
+const fetch = require("node-fetch");
 
 /*
 //GET todas ordenes de servicio
@@ -872,6 +874,7 @@ function temp_table_despachado() {
 
 };
 
+//http://localhost:3006/info/despacho_skus_nested
 router.get("/despacho_skus_nested",  async(req, res, next) => { 
  
   try {
@@ -893,6 +896,213 @@ router.get("/despacho_skus_nested",  async(req, res, next) => {
     }
   });
 
+});
+
+
+// ****** Nested Json Query **********************************//
+
+// GET todas ordenes de servicio de un determinado proveedor 
+//http://localhost:3006/info/pruebanested
+router.get("/pruebanested/:proveedor",  (req, res) => { 
+  var data = {
+    proveedor: req.params.proveedor,
+  };
+  //console.log(data.proveedor);
+
+  $var_sql = " SELECT json_object( ";
+  $var_sql += " 'OS',tb1.orden_servicio, ";
+  $var_sql += " 'prov',tb1.proveedor, ";
+  $var_sql += " 'os_skus', JSON_EXTRACT(IFNULL((SELECT ";
+  $var_sql += " CONCAT('[',GROUP_CONCAT( ";
+  $var_sql += " json_object('sku',sku,'cantidad',cantidad) ";
+  $var_sql += " ),']') ";
+  $var_sql += " From orden_de_servicio_sku AS tb_osSku where tb_osSku.orden_servicio = tb1.orden_servicio),'[]'),'$'), ";
+  $var_sql += " 'os_pendientes', JSON_EXTRACT(IFNULL((SELECT ";
+  $var_sql += " CONCAT('[',GROUP_CONCAT( ";
+  $var_sql += " json_object('prov',proveedor,'cantidad',numOS) ";
+  $var_sql += " ),']') ";
+  $var_sql += " From ( ";
+  $var_sql += " SELECT proveedor, count(*) as numOS ";
+  $var_sql += " FROM orden_de_servicio GROUP BY proveedor ";
+  $var_sql += " ) as sub where sub.proveedor = tb1.proveedor),'[]'),'$') ";
+  $var_sql += " ) as myobj ";
+  $var_sql += " FROM orden_de_servicio tb1 ";
+  $var_sql += " Where tb1.proveedor = '" + data.proveedor + "' ";
+  $var_sql += "";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    var ar = {}; // empty Object
+    var os = "palabra";
+    ar[os] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      var filajs = JSON.parse(rows[i].myobj);
+      var objetoArray = {
+        OS: filajs.OS,
+        prov: filajs.prov,
+        os_skus: filajs.os_skus,
+        os_pendientes: filajs.os_pendientes
+      };
+      ar[os].push(objetoArray);
+    } //end of OP loop
+
+    //console.log(ar[os]);
+    if (!err) {
+      res.send(ar[os]);
+    } else {
+      console.log(err);
+    }
+  }); // end mysqlConnection row
+});
+
+
+/*
+//Conditional Hardcoded Auth token
+if(req.header('x-auth-HC-token') == '123123'){
+  var data = {proveedor: req.params.proveedor,};
+  //console.log(data.proveedor);
+
+  $var_sql = "SELECT distinct os.orden_servicio, os.proveedor, os.fecha_envio FROM orden_de_servicio ";
+  $var_sql += "AS os  ";
+  $var_sql += "WHERE os.proveedor = '" + data.proveedor + "' ";
+  //console.log($var_sql);
+
+  mysqlConnection.query($var_sql, (err, rows, fields) => {
+    if (!err) {
+      res.status(206).json(rows);
+    } else {
+      console.log(err);
+    }
+  });
+
+}else{
+  res.status(403).send('Contraseña requerida')
+}
+
+*/
+
+
+
+
+// Prueba de AUTH hardcoded simple
+router.get("/api_prueba_os/:proveedor", async (req, res, next) => { //isAuth,
+
+  const toktok = await py_pi_panda_access_token((data)=>{ 
+    console.log(data);
+    return data;
+  });
+  console.log(toktok);
+  console.log('toktok: ' + toktok);
+
+
+
+  await py_pi_panda_access_token((data)=>{
+    const token_access = data; //token_access
+    
+    //Query Python GET using access token
+    fetch('https://py-pi-panda.herokuapp.com' + '/items_lista', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token_access }
+    })
+    .then(response => response.json())
+    .then(result => {
+        //console.log(result);
+        res.status(200).json({ result });
+        /*
+        console.log('Success:', result);
+        res.status(201).json({
+          message_post: "Datos guardados input yoshio",
+          nombre: nombre,
+        });
+        */
+    }).catch(error => {
+        console.error('Error:', error);
+    });
+
+  });//End await py_pi_panda_access_token
+  
+});
+
+
+
+  function py_pi_panda_access_token (callback) { 
+    //PYTHON lOGIN API
+    let credential = {
+      username: 'chachis',
+      password: 'chachis123'
+    };
+    fetch('https://py-pi-panda.herokuapp.com' + '/login', {
+      method: 'POST',
+      body: JSON.stringify(credential),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(result => {
+      const token_access = result['access_token'];
+      //console.log('funcion del tocken py pandas' + token_access);      
+      callback(token_access); //return value
+      
+    }).catch(error => {
+      console.error('Error:', error);
+    });
+  };
+
+
+// Devovler los stados //http://localhost:3006/info/os_status
+router.post("/os_status",  (req, res, next) => {
+  //isAuth,
+  var count_reqs = Object.keys(req.body.arraydata).length;
+  //console.log(count_reqs);
+  
+  new_array = []; //Donde hago el push
+  var obj = {}; //la instancia de la respuesta mysql
+  var ciclo = 0;
+
+  for (let i = 0; i < count_reqs; i++) {
+    var dataparam = {os_id: req.body.arraydata[i].os_id};
+    //console.log(dataparam.os_id);
+
+    $var_sql = "SELECT distinct os.orden_servicio, os.proveedor, os.fecha_envio FROM orden_de_servicio as os";
+    $var_sql += " WHERE os.orden_servicio = '" + dataparam.os_id + "' ";
+    //console.log($var_sql);
+
+    mysqlConnection.query($var_sql, (err, rows, fields) => {
+      
+      console.log(rows.length); 
+      if(rows.length < 1){
+        //res.send(new_array);  
+        //return res.status(400).json({success: false, error_msg: " No se encuentra el id OS = '" + dataparam.os_id + "' "});
+        return res.status(400).json({success: false, error_msg: " No se encuentra el id OS = '" + req.body.arraydata[i].os_id + "' ", registros: new_array});
+      }
+      
+      obj = {
+        "orden_servicio":rows[0].orden_servicio,
+        "proveedor":rows[0].proveedor,
+        "fecha_envio":rows[0].fecha_envio
+      }
+      
+      new_array.push(obj);
+      ciclo++;
+      var obj = {};
+      
+      if (!err) {
+        if ( count_reqs <= ciclo){
+          //console.log(ciclo);   
+          return res.status(200).json({success: true, error_msg: "", registros: new_array});         
+        }
+
+      } else {          
+        //console.log(err);
+        
+        //next(err);
+        return next(
+          new ErrorResponse(`Error mensje: ${req.body.arraydata[i].os_id}`, 404)
+        );
+      }
+    });//End mysqlConnection Query
+
+  }//END For count
 });
 
 module.exports = router;

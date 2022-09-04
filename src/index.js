@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const infoRoutes = require("./routes/info_mysql");
 const writeRoutes = require("./routes/write_db");
 const authRoutes = require("./routes/auth");
+const errorHandler = require("./middleware/error");
 const app = express();
 
 // Settings
@@ -33,7 +34,13 @@ app.use(function (req, res, next) {
 app.use(require("./routes/employees"));
 app.use("/info", infoRoutes);
 app.use("/write", writeRoutes);
+
+//Authorization token
 app.use("/auth", authRoutes);
+
+//error Handling
+app.use(errorHandler); 
+
 
 // Starting the server
 app.listen(app.get("port"), () => {

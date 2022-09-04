@@ -1,0 +1,86 @@
+::: Apuntes para get_mysql_v3 ::::: Docker file ::::::::::::::::::::::::::::::::::::::::
+
+//1 Para crear la imagen de mi web app (node-restapi-yks es el nombre de la imagen q creo, tambien se crea un container)
+docker build -t node-restapi-yks .
+ + docker build -t get_mysql .
+
+//2 Para correr el container (La aplicacion se esta ejecutando dentro de un container)
+docker run -d -p 4100:3100 node-restapi-yks
++ docker run -d -p 4120:3120 get_mysql
+
+//3 Parar la ejecucion del container
+//3.1 Para saber cual es el ID del container
+docker ps -a
+//3.2 Para parar la aplicacion dentro del container
+docker stop c567fb031ba3
+
+//4 desplegar en heroku
+heroku login
+heroku container:login
+heroku create
+
+https://salty-springs-28850.herokuapp.com/
+heroku container:push web --app salty-springs-28850
+heroku container:release web --app salty-springs-28850
+heroku logs --tail --app salty-springs-28850
+heroku apps:rename apitrialtol --app salty-springs-28850
+
+https://enigmatic-castle-60924.herokuapp.com/ 
+heroku container:push web --app enigmatic-castle-60924
+heroku container:release web --app enigmatic-castle-60924
+heroku logs --tail --app enigmatic-castle-60924
+heroku apps:rename node-docker-veruno --app enigmatic-castle-60924
+
+POSTMAN:
+GET: enigmatic-castle-60924.herokuapp.com/products
+GET: node-docker-veruno.herokuapp.com/products
+POST: node-docker-veruno.herokuapp.com/new-product
+
+
+
+
+
+
+
+::: Apuntes para get_mysql_v2 :::::::::::::::::::::::::::::::::::::::::::::
+To execute: npm run dev
+
+//-----para guardar ---------------------------------------------------------------
+git add .
+git commit -m "Retirar isAuth"
+git push -u api_tol_wms master
+
+git remote add api_tol_wms https://github.com/yoshiokiyamusu/api_tol_wms.git
+
+//--------------------------------------------------------------------
+
+//para crear una rama
+git checkout -b branch14may     (nuevo)
+
+git push api_tol_proveedor2 branch14may
+
+//para hacer el merge de rama a master: hla
+git checkout master
+git merge branch14may
+
+---- SQL Query json format ---- 
+
+SELECT json_object( 
+ 'orden_servicio', pendiente_prov.orden_servicio,
+ 'proveedor', pendiente_prov.proveedor, 
+ 'productos', JSON_ARRAY( 
+   json_object( 
+	  'sku', pendiente_prov.sku,
+	  'sku_readable', pendiente_prov.sku_readable,  
+	  'cantidad', pendiente_prov.cantidad
+  )
+)) as myobj  
+FROM (  
+  -- Normal SQL statement
+) AS pendiente_prov
+
+
+//Articulos
+
+https://zellwk.com/blog/async-await-express/
+https://www.technicalkeeda.com/nodejs-tutorials/nodejs-mysql-multiple-statement-queries
