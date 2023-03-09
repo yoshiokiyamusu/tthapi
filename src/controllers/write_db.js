@@ -320,14 +320,15 @@ exports.colorPic = async (req, res, next) => {
     
     $var_sql = "INSERT INTO color (nombre, descripcion, img_url, estado, usuario )";
     $var_sql += " VALUES (" + mysqlConnection.escape(nombre) + "," + mysqlConnection.escape(descripcion) + ",'" + url + "','" + estado + "','" + usuario + "') ";
-    console.log($var_sql);
+    //console.log($var_sql);
 
     mysqlConnection.query($var_sql, (err, rows, fields) => {
       if (!err) {
-        /* res.status(201).json({
-          message_post: "Imagen guardada",
-          nombre: nombre
-        });
+        /* 
+          res.status(201).json({
+            message_post: "Imagen guardada",
+            nombre: nombre
+          });
        */
       } else {
         console.log(err);
