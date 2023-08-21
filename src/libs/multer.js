@@ -29,6 +29,7 @@ const upload = multer({
       cb(null, getRandomInt(1,1000)+'_'+file.originalname ); //Agregar la extension al archivo subido
     },
   }),
-}).array("file"); //Es como un elementListener, "single" es para subir 1 solo archivo "array" es para multiples archivos //"upload" es el nombre la ruta donde esta el formulario
+}).array("file"); //Es como un elementListener, "single" es para subir 1 solo archivo "array" es para multiples archivos //"upload" es el nombre la ruta donde esta el formulario 
+//"file" es el nombre que le tienes que colocar al elemento input de tu formulario
 
 module.exports = { upload, s3 };

@@ -1,3 +1,20 @@
+
+//-----para guardar ---------------------------------------------------------------
+git remote add reposi_api_tth https://github.com/yoshiokiyamusu/tthapi.git
+git fetch reposi_api_tth
+git checkout reposi_api_tth/main   
+git status
+
+git remote -v
+git status
+git add .
+git commit -m "Fix Digital Spaces Img system"
+git push -u api_th_pic main
+
+
+
+
+
 ::: Apuntes para get_mysql_v3 ::::: Docker file ::::::::::::::::::::::::::::::::::::::::
 
 //1 Para crear la imagen de mi web app (node-restapi-yks es el nombre de la imagen q creo, tambien se crea un container)
