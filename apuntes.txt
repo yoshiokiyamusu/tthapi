@@ -2,14 +2,14 @@
 //-----para guardar ---------------------------------------------------------------
 git remote add reposi_api_tth https://github.com/yoshiokiyamusu/tthapi.git
 git fetch reposi_api_tth
-git checkout reposi_api_tth/main   
+git checkout reposi_api_tth
 git status
 
 git remote -v
 git status
 git add .
-git commit -m "Fix Digital Spaces Img system"
-git push -u api_th_pic main
+git commit -m "new code on uploading pics"
+git push -u reposi_api_tth main
 
 
 
